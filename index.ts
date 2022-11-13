@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle, REST, Routes } from "discord.js";
+import { ButtonBuilder, ButtonStyle, Events, REST, Routes } from "discord.js";
 import { Client, GatewayIntentBits, ActionRowBuilder } from "discord.js";
 import { commands, CommandNames } from "./commands";
 import dotenv from "dotenv";
@@ -56,6 +56,14 @@ app.listen(port, () => {
         components: [row],
       });
     }
+  });
+
+  client.on(Events.InteractionCreate, (interaction) => {
+    if (!interaction.isButton()) {
+      return;
+    }
+
+    console.log(interaction);
   });
 
   registerCommands()
