@@ -1,0 +1,29 @@
+{
+  "name": "poltoraha-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node ./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fak3alien/poltoraha-bot.git"
+  },
+  "author": "fak3alien",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fak3alien/poltoraha-bot/issues"
+  },
+  "homepage": "https://github.com/fak3alien/poltoraha-bot#readme",
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3"
+  }
+}
