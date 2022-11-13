@@ -10,8 +10,10 @@ const BOT_TOKEN = process.env.BOT_TOKEN as string;
 const APP_ID = process.env.APPLICATION_ID as string;
 const rest = new REST({ version: "10" }).setToken(BOT_TOKEN);
 
+console.log("PROCESS ENV PORT: ", process.env.PORT);
+
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
