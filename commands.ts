@@ -6,10 +6,10 @@ export enum CommandNames {
 export const commands: Array<{ name: CommandNames; description: string }> = [
   {
     name: CommandNames.PING,
-    description: "Replies with Pong!",
+    description: "Проверка статуса",
   },
   {
     name: CommandNames.ENERGY,
-    description: "Energy stats",
+    description: "Получить энергию",
   }
 ];

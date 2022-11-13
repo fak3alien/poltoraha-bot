@@ -1,4 +1,11 @@
-import { ButtonBuilder, ButtonStyle, Events, REST, Routes } from "discord.js";
+import {
+  ButtonBuilder,
+  ButtonInteraction,
+  ButtonStyle,
+  Events,
+  REST,
+  Routes,
+} from "discord.js";
 import { Client, GatewayIntentBits, ActionRowBuilder } from "discord.js";
 import { commands, CommandNames } from "./commands";
 import dotenv from "dotenv";
@@ -14,6 +21,8 @@ console.log("PROCESS ENV PORT: ", process.env.PORT);
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+const energy: Record<string, number> = {};
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
@@ -32,11 +41,20 @@ app.listen(port, () => {
 
   const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
+  const energyButton = new ButtonBuilder()
+    .setCustomId("energy-button")
+    .setLabel("Нажми сюда!")
+    .setStyle(ButtonStyle.Primary);
+
+  const energyRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    energyButton
+  );
+
   client.on("ready", () => {
     console.log(`Logged in as ${client.user?.tag}!`);
   });
 
-  client.on("interactionCreate", async (interaction: any) => {
+  client.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
     if (interaction.commandName === CommandNames.PING) {
@@ -44,26 +62,40 @@ app.listen(port, () => {
     }
 
     if (interaction.commandName === CommandNames.ENERGY) {
-      const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId("energy-button")
-          .setLabel("Press me!")
-          .setStyle(ButtonStyle.Primary)
-      );
-
       await interaction.reply({
-        content: "To add some energy: ",
-        components: [row],
+        content: "Чтобы получить энергию: ",
+        components: [energyRow],
       });
     }
-  });
 
-  client.on(Events.InteractionCreate, (interaction) => {
-    if (!interaction.isButton()) {
-      return;
-    }
+    const filter = (i: ButtonInteraction) => i.customId === "energy-button";
 
-    console.log(interaction);
+    const collector = interaction.channel?.createMessageComponentCollector<2>({
+      filter,
+    });
+
+    collector?.on("collect", async (i) => {
+      if (Object.hasOwn(energy, interaction.user.username)) {
+        energy[interaction.user.username] =
+          energy[interaction.user.username] + 10;
+      }
+
+      if (!Object.hasOwn(energy, interaction.user.username)) {
+        energy[interaction.user.username] = 10;
+      }
+      await i.update({
+        content: `${
+          interaction.user.username
+        } получил +10 энергии! Продолжай в том же духе! Всего: ${
+          energy[interaction.user.username]
+        }`,
+        components: [energyRow],
+      });
+    });
+
+    collector?.on("end", (collected) =>
+      console.log(`Collected ${collected.size} items`)
+    );
   });
 
   registerCommands()
