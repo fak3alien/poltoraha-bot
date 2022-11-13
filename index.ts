@@ -1,5 +1,5 @@
-import { REST, Routes } from "discord.js";
-import { Client, GatewayIntentBits } from "discord.js";
+import { ButtonBuilder, ButtonStyle, REST, Routes } from "discord.js";
+import { Client, GatewayIntentBits, ActionRowBuilder } from "discord.js";
 import { commands, CommandNames } from "./commands";
 import dotenv from "dotenv";
 import express from "express";
@@ -41,6 +41,20 @@ app.listen(port, () => {
 
     if (interaction.commandName === CommandNames.PING) {
       await interaction.reply("I'm alive");
+    }
+
+    if (interaction.commandName === CommandNames.ENERGY) {
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId("energy-button")
+          .setLabel("Press me!")
+          .setStyle(ButtonStyle.Primary)
+      );
+
+      await interaction.reply({
+        content: "To add some energy: ",
+        components: [row],
+      });
     }
   });
 
